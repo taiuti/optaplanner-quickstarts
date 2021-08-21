@@ -4,14 +4,15 @@
 
 [cols="1,1"]
 |===
-|*Use case quickstarts*
-|*Technology quickstarts*
+|Use case quickstarts |Technology quickstarts
 
 a|* <<school-timetabling, School timetabling>>
 * <<facility-location, Facility location problem>>
 * <<maintenance-scheduling, Maintenance scheduling>>
 * <<call-center, Call center>>
-* <<vaccination-scheduling, Vaccination Scheduling>>
+* <<vaccination-scheduling, Vaccination scheduling>>
+* <<quarkus-vehicle-routing, Vehicle Routing>>
+* <<quarkus-vehicle-routing-pick-delivery, Vehicle Routing.Pick.Delivery>>
 
 a|* link:use-cases/school-timetabling/README.adoc[Quarkus] (Java, Maven or Gradle, Quarkus, H2)
 * link:technology/java-spring-boot/README.adoc[Spring Boot] (Java, Maven or Gradle, Spring Boot, H2)
@@ -51,6 +52,8 @@ image::build/quickstarts-showcase/src/main/resources/META-INF/resources/screensh
 * link:technology/java-spring-boot/README.adoc[Run spring-boot-school-timetabling] (Java, Maven or Gradle, Spring Boot, H2)
 * link:technology/java-activemq-quarkus/README.adoc[Run activemq-quarkus-school-timetabling] (Java, ActiveMQ, Maven, Quarkus)
 * link:technology/kotlin-quarkus/README.adoc[Run kotlin-quarkus-school-timetabling] (Kotlin, Maven, Quarkus, H2)
+* link:use-cases/vehicle-routing/README.adoc[Run quarkus-vehicle-routing] (Java, Maven or Gradle, Quarkus)
+* link:use-cases/vehicle-routing-pick-delivery/README.adoc[Run quarkus-vehicle-routing-pick-delivery] (Java, Maven or Gradle, Quarkus)
 
 Without a UI:
 
@@ -93,6 +96,24 @@ to end a pandemic sooner.
 image::build/quickstarts-showcase/src/main/resources/META-INF/resources/screenshot/quarkus-vaccination-scheduling-screenshot.png[]
 
 * link:use-cases/vaccination-scheduling/README.adoc[Run quarkus-vaccination-scheduling] (Java, Maven, Quarkus)
+
+[[quarkus-vehicle-routing]]
+=== Quarkus Vehicle Routing
+
+Find the most efficient routes for a fleet of vehicles.
+
+image::build/quickstarts-showcase/src/main/resources/META-INF/resources/screenshot/quarkus-vehicle-routing-screenshot.png[]
+
+* link:use-cases/vehicle-routing/README.adoc[Run quarkus-vehicle-routing] (Java, Maven, Quarkus)
+
+[[quarkus-vehicle-routing-pick-delivery]]
+=== Quarkus Vehicle Routing
+
+Find the most efficient routes for a fleet of vehicles.
+
+image::build/quickstarts-showcase/src/main/resources/META-INF/resources/screenshot/quarkus-vehicle-routing-pick-delivery-screenshot.png[]
+
+* link:use-cases/vehicle-routing-pick-delivery/README.adoc[Run quarkus-vehicle-routing-pick-delivery] (Java, Maven, Quarkus)
 
 [[optaweb-vehicle-routing]]
 === OptaWeb Vehicle Routing

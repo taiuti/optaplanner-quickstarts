@@ -70,7 +70,9 @@ public class QuickstartLauncherResource {
                 new QuickstartMeta("facility-location"),
                 new QuickstartMeta("maintenance-scheduling"),
                 new QuickstartMeta("vaccination-scheduling"),
-                new QuickstartMeta("call-center"));
+                new QuickstartMeta("call-center"),
+                new QuickstartMeta("vehicle-routing"),
+                new QuickstartMeta("vehicle-routing-pick-delivery"));
         File workingDirectory;
         try {
             workingDirectory = new File(".").getCanonicalFile();

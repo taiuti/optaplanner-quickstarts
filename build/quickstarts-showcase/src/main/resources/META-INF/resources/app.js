@@ -158,6 +158,12 @@ $(document).ready(function () {
   $("#vaccination-scheduling-launch").click(function () {
     launchQuickstart("vaccination-scheduling");
   });
+  $("#vehicle-routing-launch").click(function () {
+    launchQuickstart("vehicle-routing");
+  });
+  $("#vehicle-routing-pick-delivery-launch").click(function () {
+    launchQuickstart("vehicle-routing-pick-delivery");
+  });
   $("#exit").click(function () {
     exit();
   });

@@ -26,37 +26,49 @@ public class AirLocation extends Location {
     public AirLocation() {
     }
 
-    public AirLocation(long id, String name, Point start, Point end) {
-        super(id, name, start, end);
+    public AirLocation(long id, String name, Point pickup, Point delivery) {
+        super(id, name, pickup, delivery);
     }
 
-    public AirLocation(long id, String name, Point start) {
-        super(id, name, start);
+    public AirLocation(long id, String name, Point pickup) {
+        super(id, name, pickup);
     }
 
-    public double getAirDistanceDoubleTo(Location location) {
+    protected Long getAirDistanceDoubleTo(Location location) {
         // Implementation specified by TSPLIB
         // http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a
         // sphere
 
-        // ddistance start to end
-        Double latitudeDifference = this.getStart().getLatitude() - this.getEnd().getLatitude();
-        Double longitudeDifference = this.getStart().getLongitude() - this.getEnd().getLongitude();
-        Double distanceStartToEnd = Math
-                .sqrt((latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
+        // l1 = (a1,b1) -> (c1,d1)
+        // l2 = (a2,b2) -> (c2,d2)
+        // distance L1 to L2 = Sqrt((c1-a1)^2 + (d1-b1)^2) + Sqrt((a2-c1)^2 + (b2-d1)^2)
+        // + Sqrt((c2-a2)^2 + (d2-b2)^2)
+        Double latDiff = location.getPickup().getLatitude() - this.getDelivery().getLatitude();
+        Double longDiff = location.getPickup().getLongitude() - this.getDelivery().getLongitude();
+        Double d = Math.sqrt((latDiff * latDiff) + (longDiff * longDiff));
 
-        latitudeDifference = location.getStart().getLatitude() - this.getEnd().getLatitude();
-        longitudeDifference = location.getStart().getLongitude() - this.getEnd().getLongitude();
-        Double distanceEndToLocation = Math
-                .sqrt((latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
+        // Multiplied by 1000 to avoid floating point arithmetic rounding errors
+        long distance = (long) (d * 1000.0 + 0.5);
 
-        return distanceStartToEnd + distanceEndToLocation;
+        distance = this.getDistancePickDelivery() + location.getDistancePickDelivery() + distance;
+
+        return distance;
     }
 
     @Override
     public long getDistanceTo(Location location) {
-        double distance = getAirDistanceDoubleTo(location);
+        long distance = getAirDistanceDoubleTo(location);
+        return distance;
+    }
+
+    @Override
+    public long getDistancePickDelivery() {
+
+        Double latDiff = this.getDelivery().getLatitude() - this.getPickup().getLatitude();
+        Double longDiff = this.getDelivery().getLongitude() - this.getPickup().getLongitude();
+        Double distance = Math.sqrt((latDiff * latDiff) + (longDiff * longDiff));
+
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (long) (distance * 1000.0 + 0.5);
     }

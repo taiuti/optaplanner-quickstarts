@@ -27,10 +27,10 @@ import java.util.Map;
 
 public class RoadLocation extends Location {
 
-    // Prefer Map over array or List because customers might be added and removed in
+    // Prefer Map over array or List because rides might be added and removed in
     // real-time planning.
     protected Map<RoadLocation, Double> travelDistanceMap;
-    protected Double distanceStartToEnd = null;
+    protected Double distancePickupToDelivery = null;
 
     public RoadLocation() {
     }
@@ -43,12 +43,12 @@ public class RoadLocation extends Location {
         this.travelDistanceMap = travelDistanceMap;
     }
 
-    public Double getDistanceStartToEnd() {
-        return distanceStartToEnd;
+    public Double getDistancePickupToDelivery() {
+        return distancePickupToDelivery;
     }
 
-    public void setDistanceStartToEnd(Double distanceStartToEnd) {
-        this.distanceStartToEnd = distanceStartToEnd;
+    public void setDistancePickupToDelivery(Double distancePickupToDelivery) {
+        this.distancePickupToDelivery = distancePickupToDelivery;
     }
 
     @Override
@@ -57,9 +57,15 @@ public class RoadLocation extends Location {
             return 0L;
         }
 
-        Double distance = distanceStartToEnd + (Double) travelDistanceMap.get((RoadLocation) location);
+        Double distance = distancePickupToDelivery + (Double) travelDistanceMap.get((RoadLocation) location);
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (long) (distance * 1000.0 + 0.5);
+    }
+
+    @Override
+    public long getDistancePickDelivery() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }

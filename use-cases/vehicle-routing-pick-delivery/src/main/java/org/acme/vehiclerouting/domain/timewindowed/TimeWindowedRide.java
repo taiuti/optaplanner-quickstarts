@@ -16,7 +16,7 @@
 
 package org.acme.vehiclerouting.domain.timewindowed;
 
-import org.acme.vehiclerouting.domain.Customer;
+import org.acme.vehiclerouting.domain.Ride;
 import org.acme.vehiclerouting.domain.location.Location;
 import org.acme.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -24,7 +24,7 @@ import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 
 @PlanningEntity
-public class TimeWindowedCustomer extends Customer {
+public class TimeWindowedRide extends Ride {
 
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding
     // errors
@@ -35,10 +35,10 @@ public class TimeWindowedCustomer extends Customer {
     // Shadow variable
     private Long arrivalTime;
 
-    public TimeWindowedCustomer() {
+    public TimeWindowedRide() {
     }
 
-    public TimeWindowedCustomer(long id, Location location, int demand, long readyTime, long dueTime,
+    public TimeWindowedRide(long id, Location location, int demand, long readyTime, long dueTime,
             long serviceDuration) {
         super(id, location, demand);
         this.readyTime = readyTime;
@@ -87,10 +87,10 @@ public class TimeWindowedCustomer extends Customer {
      *         point arithmetic rounding errors
      */
     @CustomShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class,
-            // Arguable, to adhere to API specs (although this works), nextCustomer should
+            // Arguable, to adhere to API specs (although this works), nextRide should
             // also be a source,
-            // because this shadow must be triggered after nextCustomer (but there is no
-            // need to be triggered by nextCustomer)
+            // because this shadow must be triggered after nextRide (but there is no
+            // need to be triggered by nextRide)
             sources = { @PlanningVariableReference(variableName = "previousStandstill") })
     public Long getArrivalTime() {
         return arrivalTime;
@@ -124,15 +124,15 @@ public class TimeWindowedCustomer extends Customer {
     }
 
     @Override
-    public TimeWindowedCustomer getNextCustomer() {
-        return (TimeWindowedCustomer) super.getNextCustomer();
+    public TimeWindowedRide getNextRide() {
+        return (TimeWindowedRide) super.getNextRide();
     }
 
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating
      *         point arithmetic rounding errors
      */
-    public long getTimeWindowGapTo(TimeWindowedCustomer other) {
+    public long getTimeWindowGapTo(TimeWindowedRide other) {
         // dueTime doesn't account for serviceDuration
         long latestDepartureTime = dueTime + serviceDuration;
         long otherLatestDepartureTime = other.getDueTime() + other.getServiceDuration();

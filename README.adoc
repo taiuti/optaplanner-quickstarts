@@ -34,7 +34,7 @@ Run the https://www.optaplanner.org/[OptaPlanner] quickstarts now:
 +
 [source, shell]
 ----
-$ git clone https://github.com/kiegroup/optaplanner-quickstarts.git
+$ git clone https://github.com/taiuti/optaplanner-quickstarts.git
 $ cd optaplanner-quickstarts
 $ ./runQuickstartsFromSource.sh
 ----

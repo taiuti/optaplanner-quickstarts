@@ -26,13 +26,33 @@ public class AirLocationTest {
 
     @Test
     public void getDistance() {
+
         long id = 0;
+
+        // distance single point a -> b
         AirLocation a = new AirLocation(id++, "", new Point(id++, "", 0.0, 0.0));
-        AirLocation b = new AirLocation(id++, "", new Point(id++, "", 0.0, 4.0));
+        AirLocation b = new AirLocation(id++, "", new Point(id++, "", 4.0, 3.0));
 
         long distance = a.getDistanceTo(b);
+        assertThat(distance).isEqualTo(5000);
 
-        assertThat(distance).isEqualTo(4000);
+        // distance point to segment
+        a = new AirLocation(id++, "", new Point(id++, "", 0.0, 0.0));
+        b = new AirLocation(id++, "", new Point(id++, "", 3.0, 0.0), new Point(id++, "", 3.0, 4.0));
+
+        distance = a.getDistanceTo(b);
+        assertThat(distance).isEqualTo(7000);
+
+        // distance segment to segment
+        a = new AirLocation(id++, "", new Point(id++, "", 0.0, 0.0), new Point(id++, "", 3.0, 0.0));
+        b = new AirLocation(id++, "", new Point(id++, "", 3.0, 2.0), new Point(id++, "", 3.0, 4.0));
+
+        distance = a.getDistanceTo(b);
+        assertThat(distance).isEqualTo(7000);
+
+        distance = b.getDistanceTo(a);
+        assertThat(distance).isEqualTo(10000);
+
     }
 
 }

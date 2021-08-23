@@ -37,8 +37,8 @@ public interface Standstill {
      * @return sometimes null
      */
     @InverseRelationShadowVariable(sourceVariableName = "previousStandstill")
-    Customer getNextCustomer();
+    Ride getNextRide();
 
-    void setNextCustomer(Customer nextCustomer);
+    void setNextRide(Ride nextRide);
 
 }

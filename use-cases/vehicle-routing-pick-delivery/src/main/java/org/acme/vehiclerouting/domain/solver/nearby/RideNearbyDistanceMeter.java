@@ -16,21 +16,21 @@
 
 package org.acme.vehiclerouting.domain.solver.nearby;
 
-import org.acme.vehiclerouting.domain.Customer;
+import org.acme.vehiclerouting.domain.Ride;
 import org.acme.vehiclerouting.domain.Standstill;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 
-public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer, Standstill> {
+public class RideNearbyDistanceMeter implements NearbyDistanceMeter<Ride, Standstill> {
 
     @Override
-    public double getNearbyDistance(Customer origin, Standstill destination) {
+    public double getNearbyDistance(Ride origin, Standstill destination) {
         long distance = origin.getDistanceTo(destination);
         // If arriving early also inflicts a cost (more than just not using the vehicle
         // more), such as the driver's wage, use this:
-        // if (origin instanceof TimeWindowedCustomer && destination instanceof
-        // TimeWindowedCustomer) {
-        // distance += ((TimeWindowedCustomer)
-        // origin).getTimeWindowGapTo((TimeWindowedCustomer) destination);
+        // if (origin instanceof TimeWindowedRide && destination instanceof
+        // TimeWindowedRide) {
+        // distance += ((TimeWindowedRide)
+        // origin).getTimeWindowGapTo((TimeWindowedRide) destination);
         // }
         return distance;
     }

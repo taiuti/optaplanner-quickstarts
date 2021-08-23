@@ -50,8 +50,8 @@ public class VehicleRoutingSolution {
     protected List<Vehicle> vehicleList;
 
     @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "customerRange")
-    protected List<Customer> customerList;
+    @ValueRangeProvider(id = "rideRange")
+    protected List<Ride> rideList;
 
     @PlanningScore
     protected HardSoftLongScore score;
@@ -63,7 +63,7 @@ public class VehicleRoutingSolution {
     }
 
     public VehicleRoutingSolution(String name, DistanceType distanceType, String distanceUnitOfMeasurement,
-            List<Location> locationList, List<Depot> depotList, List<Vehicle> vehicleList, List<Customer> customerList,
+            List<Location> locationList, List<Depot> depotList, List<Vehicle> vehicleList, List<Ride> rideList,
             Location southWestCorner, Location northEastCorner) {
         this.name = name;
         this.distanceType = distanceType;
@@ -71,7 +71,7 @@ public class VehicleRoutingSolution {
         this.locationList = locationList;
         this.depotList = depotList;
         this.vehicleList = vehicleList;
-        this.customerList = customerList;
+        this.rideList = rideList;
         this.southWestCorner = southWestCorner;
         this.northEastCorner = northEastCorner;
     }
@@ -79,7 +79,7 @@ public class VehicleRoutingSolution {
     public static VehicleRoutingSolution empty() {
 
         VehicleRoutingSolution problem = DemoDataBuilder.builder().setMinDemand(1).setMaxDemand(2)
-        .setVehicleCapacity(15).setCustomerCount(77).setVehicleCount(6).setDepotCount(2)
+        .setVehicleCapacity(15).setRideCount(77).setVehicleCount(6).setDepotCount(2)
         .setSouthWestCorner(new AirLocation(0L, "", new Point(0L, "", 43.751466, 11.177210)))
         .setNorthEastCorner(new AirLocation(0L, "", new Point(0L, "", 43.809291, 11.290195))).build();
 
@@ -136,12 +136,12 @@ public class VehicleRoutingSolution {
         this.vehicleList = vehicleList;
     }
 
-    public List<Customer> getCustomerList() {
-        return customerList;
+    public List<Ride> getRideList() {
+        return rideList;
     }
 
-    public void setCustomerList(List<Customer> customerList) {
-        this.customerList = customerList;
+    public void setRideList(List<Ride> rideList) {
+        this.rideList = rideList;
     }
 
     public HardSoftLongScore getScore() {

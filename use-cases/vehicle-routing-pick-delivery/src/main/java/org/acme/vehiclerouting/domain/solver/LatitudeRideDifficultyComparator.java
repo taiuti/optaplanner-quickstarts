@@ -18,22 +18,22 @@ package org.acme.vehiclerouting.domain.solver;
 
 import java.util.Comparator;
 
-import org.acme.vehiclerouting.domain.Customer;
+import org.acme.vehiclerouting.domain.Ride;
 
 /**
  * On large datasets, the constructed solution looks like a zebra crossing.
  */
-public class LatitudeCustomerDifficultyComparator implements Comparator<Customer> {
+public class LatitudeRideDifficultyComparator implements Comparator<Ride> {
 
-    private static final Comparator<Customer> COMPARATOR = Comparator
-            .comparingDouble((Customer customer) -> customer.getLocation().getStart().getLatitude())
-            .thenComparingDouble(customer -> customer.getLocation().getStart().getLongitude())
-            .thenComparingDouble(customer -> customer.getLocation().getEnd().getLatitude())
-            .thenComparingDouble(customer -> customer.getLocation().getEnd().getLongitude())
-            .thenComparingInt(Customer::getDemand).thenComparingLong(Customer::getId);
+    private static final Comparator<Ride> COMPARATOR = Comparator
+            .comparingDouble((Ride ride) -> ride.getLocation().getPickup().getLatitude())
+            .thenComparingDouble(ride -> ride.getLocation().getPickup().getLongitude())
+            .thenComparingDouble(ride -> ride.getLocation().getDelivery().getLatitude())
+            .thenComparingDouble(ride -> ride.getLocation().getDelivery().getLongitude())
+            .thenComparingInt(Ride::getDemand).thenComparingLong(Ride::getId);
 
     @Override
-    public int compare(Customer a, Customer b) {
+    public int compare(Ride a, Ride b) {
         return COMPARATOR.compare(a, b);
     }
 

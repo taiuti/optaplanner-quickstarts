@@ -21,7 +21,7 @@ import static java.util.Comparator.comparingLong;
 
 import java.util.Comparator;
 
-import org.acme.vehiclerouting.domain.Customer;
+import org.acme.vehiclerouting.domain.Ride;
 import org.acme.vehiclerouting.domain.Depot;
 import org.acme.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
@@ -29,40 +29,40 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 /**
  * On large datasets, the constructed solution looks like pizza slices.
  */
-public class DepotAngleCustomerDifficultyWeightFactory
-        implements SelectionSorterWeightFactory<VehicleRoutingSolution, Customer> {
+public class DepotAngleRideDifficultyWeightFactory
+        implements SelectionSorterWeightFactory<VehicleRoutingSolution, Ride> {
 
     @Override
-    public DepotAngleCustomerDifficultyWeight createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution,
-            Customer customer) {
+    public DepotAngleRideDifficultyWeight createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution,
+            Ride ride) {
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
-        return new DepotAngleCustomerDifficultyWeight(customer,
-                customer.getLocation().getAngle(depot.getLocation()),
-                customer.getLocation().getDistanceTo(depot.getLocation())
-                        + depot.getLocation().getDistanceTo(customer.getLocation()));
+        return new DepotAngleRideDifficultyWeight(ride,
+                ride.getLocation().getAngle(depot.getLocation()),
+                ride.getLocation().getDistanceTo(depot.getLocation())
+                        + depot.getLocation().getDistanceTo(ride.getLocation()));
     }
 
-    public static class DepotAngleCustomerDifficultyWeight
-            implements Comparable<DepotAngleCustomerDifficultyWeight> {
+    public static class DepotAngleRideDifficultyWeight
+            implements Comparable<DepotAngleRideDifficultyWeight> {
 
-        private static final Comparator<DepotAngleCustomerDifficultyWeight> COMPARATOR = comparingDouble(
-                (DepotAngleCustomerDifficultyWeight weight) -> weight.depotAngle)
+        private static final Comparator<DepotAngleRideDifficultyWeight> COMPARATOR = comparingDouble(
+                (DepotAngleRideDifficultyWeight weight) -> weight.depotAngle)
                         .thenComparingLong(weight -> weight.depotRoundTripDistance) // Ascending (further from the depot are more difficult)
-                        .thenComparing(weight -> weight.customer, comparingLong(Customer::getId));
+                        .thenComparing(weight -> weight.ride, comparingLong(Ride::getId));
 
-        private final Customer customer;
+        private final Ride ride;
         private final double depotAngle;
         private final long depotRoundTripDistance;
 
-        public DepotAngleCustomerDifficultyWeight(Customer customer,
+        public DepotAngleRideDifficultyWeight(Ride ride,
                 double depotAngle, long depotRoundTripDistance) {
-            this.customer = customer;
+            this.ride = ride;
             this.depotAngle = depotAngle;
             this.depotRoundTripDistance = depotRoundTripDistance;
         }
 
         @Override
-        public int compareTo(DepotAngleCustomerDifficultyWeight other) {
+        public int compareTo(DepotAngleRideDifficultyWeight other) {
             return COMPARATOR.compare(this, other);
         }
     }

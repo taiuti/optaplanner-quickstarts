@@ -25,7 +25,7 @@ import org.acme.vehiclerouting.domain.location.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonIgnoreProperties({ "nextCustomer" })
+@JsonIgnoreProperties({ "nextRide" })
 public class Vehicle implements Standstill {
 
     protected Long id;
@@ -33,7 +33,7 @@ public class Vehicle implements Standstill {
     protected Depot depot;
 
     // Shadow variables
-    protected Customer nextCustomer;
+    protected Ride nextRide;
 
     public Vehicle() {
     }
@@ -69,13 +69,13 @@ public class Vehicle implements Standstill {
     }
 
     @Override
-    public Customer getNextCustomer() {
-        return nextCustomer;
+    public Ride getNextRide() {
+        return nextRide;
     }
 
     @Override
-    public void setNextCustomer(Customer nextCustomer) {
-        this.nextCustomer = nextCustomer;
+    public void setNextRide(Ride nextRide) {
+        this.nextRide = nextRide;
     }
 
     // ************************************************************************
@@ -109,22 +109,22 @@ public class Vehicle implements Standstill {
 
         List<Point> route = new ArrayList<Point>();
 
-        Customer lastCustomer = null;
-        Customer customer = getNextCustomer();
-        if (customer != null){
-            route.add(depot.getLocation().getStart());
+        Ride lastRide = null;
+        Ride ride = getNextRide();
+        if (ride != null){
+            route.add(depot.getLocation().getPickup());
         }
 
-         // add list of customer location
-        while (customer != null) {
-            route.add(customer.getLocation().getStart());
-            route.add(customer.getLocation().getEnd());
-            lastCustomer =customer;
-            customer = customer.getNextCustomer();
+         // add list of ride location
+        while (ride != null) {
+            route.add(ride.getLocation().getPickup());
+            route.add(ride.getLocation().getDelivery());
+            lastRide =ride;
+            ride = ride.getNextRide();
         }
 
-        if (lastCustomer != null){
-            route.add(depot.getLocation().getStart());
+        if (lastRide != null){
+            route.add(depot.getLocation().getPickup());
         }
 
         return route;
@@ -133,17 +133,17 @@ public class Vehicle implements Standstill {
     public Long getTotalDistance() {
 
         Long totalDistance = getDistanceTo(this);
-         // add list of customer location
-         Customer customer = getNextCustomer();
-         Customer lastCustomer = getNextCustomer();
-         while (customer != null) {
-            totalDistance += customer.getDistanceFromPreviousStandstill();
-            lastCustomer = customer;
-            customer = customer.getNextCustomer();
+         // add list of ride location
+         Ride ride = getNextRide();
+         Ride lastRide = getNextRide();
+         while (ride != null) {
+            totalDistance += ride.getDistanceFromPreviousStandstill();
+            lastRide = ride;
+            ride = ride.getNextRide();
         }
 
-        if (lastCustomer != null){
-            totalDistance += lastCustomer.getDistanceTo(this);
+        if (lastRide != null){
+            totalDistance += lastRide.getDistanceTo(this);
         }
         return totalDistance;
     }

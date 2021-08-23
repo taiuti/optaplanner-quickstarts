@@ -37,15 +37,15 @@ public class DemoDataGenerator {
 
     public void generateDemoData(@Observes StartupEvent startupEvent) {
 
-                Integer customerCount = 17;
-                Integer vehicleCount = 3;
-                Integer depotCount = 2;
+                Integer rideCount = 77;
+                Integer vehicleCount = 2;
+                Integer depotCount = 1;
                 Integer minDemand = 1;
                 Integer maxDemand = 2;
-                Integer vehicleCapacity = 7;
+                Integer vehicleCapacity = 40;
                 
                 VehicleRoutingSolution problem = DemoDataBuilder.builder().setMinDemand(minDemand).setMaxDemand(maxDemand)
-                        .setVehicleCapacity(vehicleCapacity).setCustomerCount(customerCount).setVehicleCount(vehicleCount)
+                        .setVehicleCapacity(vehicleCapacity).setRideCount(rideCount).setVehicleCount(vehicleCount)
                         .setDepotCount(depotCount)
                         .setSouthWestCorner(new AirLocation(0L, "", new Point(0L, "", 43.751466, 11.177210)))
                         .setNorthEastCorner(new AirLocation(0L, "", new Point(0L, "", 43.809291, 11.290195))).build();

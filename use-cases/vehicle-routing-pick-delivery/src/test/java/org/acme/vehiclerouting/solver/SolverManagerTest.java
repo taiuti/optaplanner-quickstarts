@@ -36,7 +36,7 @@ public class SolverManagerTest {
     @Test
     void solve() throws ExecutionException, InterruptedException {
         VehicleRoutingSolution problem = DemoDataBuilder.builder().setMinDemand(1).setMaxDemand(2)
-                .setVehicleCapacity(15).setCustomerCount(77).setVehicleCount(6).setDepotCount(2)
+                .setVehicleCapacity(15).setRideCount(77).setVehicleCount(6).setDepotCount(2)
                 .setSouthWestCorner(new AirLocation(0L, "", new Point(0L, "", 43.751466, 11.177210)))
                 .setNorthEastCorner(new AirLocation(0L, "", new Point(0L, "", 43.809291, 11.290195))).build();
         solverManager.solve(0L, id -> problem, SolverManagerTest::printSolution).getFinalBestSolution();

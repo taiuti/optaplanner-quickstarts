@@ -31,22 +31,22 @@ class DemoDataBuilderTest {
     @Test
     void should_build_data() {
 
-        Integer customerCount = 77;
+        Integer rideCount = 77;
         Integer vehicleCount = 6;
         Integer depotCount = 2;
         Integer minDemand = 1;
         Integer maxDemand = 2;
 
         VehicleRoutingSolution problem = DemoDataBuilder.builder().setMinDemand(minDemand).setMaxDemand(maxDemand)
-                .setVehicleCapacity(15).setCustomerCount(customerCount).setVehicleCount(vehicleCount)
+                .setVehicleCapacity(15).setRideCount(rideCount).setVehicleCount(vehicleCount)
                 .setDepotCount(depotCount)
                 .setSouthWestCorner(new AirLocation(0L, "", new Point(0L, "", 43.751466, 11.177210)))
                 .setNorthEastCorner(new AirLocation(0L, "", new Point(0L, "", 43.809291, 11.290195))).build();
 
-        problem.getCustomerList().forEach(
-                customer -> assertTrue((minDemand <= customer.getDemand()) && (maxDemand >= customer.getDemand())));
+        problem.getRideList().forEach(
+                ride -> assertTrue((minDemand <= ride.getDemand()) && (maxDemand >= ride.getDemand())));
 
-        assertEquals(customerCount, problem.getCustomerList().size());
+        assertEquals(rideCount, problem.getRideList().size());
         assertEquals(vehicleCount, problem.getVehicleList().size());
         assertEquals(depotCount, problem.getDepotList().size());
     }
@@ -102,7 +102,7 @@ class DemoDataBuilderTest {
     }
 
     static DemoDataBuilder correctBuilder() {
-        return DemoDataBuilder.builder().setMinDemand(1).setMaxDemand(2).setVehicleCapacity(15).setCustomerCount(77)
+        return DemoDataBuilder.builder().setMinDemand(1).setMaxDemand(2).setVehicleCapacity(15).setRideCount(77)
                 .setVehicleCount(6).setDepotCount(2).setSouthWestCorner(new AirLocation(0L,"", new Point(0L,"",43.751466, 11.177210)))
                 .setNorthEastCorner(new AirLocation(0L,"", new Point(0L,"", 43.809291, 11.290195)));
 

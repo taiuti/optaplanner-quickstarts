@@ -16,7 +16,7 @@
 
 package org.acme.vehiclerouting.bootstrap;
 
-import org.acme.vehiclerouting.domain.Customer;
+import org.acme.vehiclerouting.domain.Ride;
 import org.acme.vehiclerouting.domain.Depot;
 import org.acme.vehiclerouting.domain.Vehicle;
 import org.acme.vehiclerouting.domain.VehicleRoutingSolution;
@@ -40,7 +40,7 @@ public class DemoDataBuilder {
 
         private Location southWestCorner;
         private Location northEastCorner;
-        private int customerCount;
+        private int rideCount;
         private int vehicleCount;
         private int depotCount;
         private int minDemand;
@@ -70,8 +70,8 @@ public class DemoDataBuilder {
                 return this;
         }
 
-        public DemoDataBuilder setCustomerCount(int customerCount) {
-                this.customerCount = customerCount;
+        public DemoDataBuilder setRideCount(int rideCount) {
+                this.rideCount = rideCount;
                 return this;
         }
 
@@ -110,9 +110,9 @@ public class DemoDataBuilder {
                         throw new IllegalStateException("Number of vehicleCapacity (" + vehicleCapacity
                                         + ") must be greater than zero.");
                 }
-                if (customerCount < 1) {
+                if (rideCount < 1) {
                         throw new IllegalStateException(
-                                        "Number of customerCount (" + customerCount + ") must be greater than zero.");
+                                        "Number of rideCount (" + rideCount + ") must be greater than zero.");
                 }
                 if (vehicleCount < 1) {
                         throw new IllegalStateException(
@@ -123,29 +123,29 @@ public class DemoDataBuilder {
                                         "Number of depotCount (" + depotCount + ") must be greater than zero.");
                 }
 
-                if (northEastCorner.getStart().getLatitude() <= southWestCorner.getStart().getLatitude()) {
-                        throw new IllegalStateException("southWestCorner.getStart().getLatitude ("
-                                        + southWestCorner.getStart().getLatitude()
-                                        + ") must be greater than southWestCorner.getStart().getLatitude("
-                                        + southWestCorner.getStart().getLatitude() + ").");
+                if (northEastCorner.getPickup().getLatitude() <= southWestCorner.getPickup().getLatitude()) {
+                        throw new IllegalStateException("southWestCorner.getPickup().getLatitude ("
+                                        + southWestCorner.getPickup().getLatitude()
+                                        + ") must be greater than southWestCorner.getPickup().getLatitude("
+                                        + southWestCorner.getPickup().getLatitude() + ").");
                 }
 
-                if (northEastCorner.getStart().getLongitude() <= southWestCorner.getStart().getLongitude()) {
-                        throw new IllegalStateException("southWestCorner.getStart().getLongitude ("
-                                        + southWestCorner.getStart().getLongitude()
-                                        + ") must be greater than southWestCorner.getStart().getLongitude("
-                                        + southWestCorner.getStart().getLongitude() + ").");
+                if (northEastCorner.getPickup().getLongitude() <= southWestCorner.getPickup().getLongitude()) {
+                        throw new IllegalStateException("southWestCorner.getPickup().getLongitude ("
+                                        + southWestCorner.getPickup().getLongitude()
+                                        + ") must be greater than southWestCorner.getPickup().getLongitude("
+                                        + southWestCorner.getPickup().getLongitude() + ").");
                 }
 
                 String name = "demo";
                 DistanceType distanceType = DistanceType.AIR_DISTANCE;
                 String distanceUnitOfMeasurement = "km";
 
-                Random random = new Random(7);
-                PrimitiveIterator.OfDouble latitudes = random.doubles(southWestCorner.getStart().getLatitude(),
-                                northEastCorner.getStart().getLatitude()).iterator();
-                PrimitiveIterator.OfDouble longitudes = random.doubles(southWestCorner.getStart().getLongitude(),
-                                northEastCorner.getStart().getLongitude()).iterator();
+                Random random = new Random(2);
+                PrimitiveIterator.OfDouble latitudes = random.doubles(southWestCorner.getPickup().getLatitude(),
+                                northEastCorner.getPickup().getLatitude()).iterator();
+                PrimitiveIterator.OfDouble longitudes = random.doubles(southWestCorner.getPickup().getLongitude(),
+                                northEastCorner.getPickup().getLongitude()).iterator();
 
                 PrimitiveIterator.OfInt demand = random.ints(minDemand, maxDemand).iterator();
 
@@ -163,7 +163,7 @@ public class DemoDataBuilder {
                 List<Vehicle> vehicleList = Stream.generate(vehicleSupplier).limit(vehicleCount)
                                 .collect(Collectors.toList());
 
-                Supplier<Customer> customerSupplier = () -> new Customer(sequence.incrementAndGet(),
+                Supplier<Ride> rideSupplier = () -> new Ride(sequence.incrementAndGet(),
                                 new AirLocation(sequence.incrementAndGet(), "",
                                                 new Point(sequence.incrementAndGet(), "", latitudes.nextDouble(),
                                                                 longitudes.nextDouble()),
@@ -171,13 +171,13 @@ public class DemoDataBuilder {
                                                                 longitudes.nextDouble())),
                                 demand.nextInt());
 
-                List<Customer> customerList = Stream.generate(customerSupplier).limit(customerCount)
+                List<Ride> rideList = Stream.generate(rideSupplier).limit(rideCount)
                                 .collect(Collectors.toList());
 
                 List<Location> locationList = new ArrayList<Location>();
-                for (Customer customer : customerList) {
+                for (Ride ride : rideList) {
 
-                        locationList.add(customer.getLocation());
+                        locationList.add(ride.getLocation());
                 }
 
                 for (Depot depot : depotList) {
@@ -185,7 +185,7 @@ public class DemoDataBuilder {
                 }
 
                 return new VehicleRoutingSolution(name, distanceType, distanceUnitOfMeasurement, locationList,
-                                depotList, vehicleList, customerList, southWestCorner, northEastCorner);
+                                depotList, vehicleList, rideList, southWestCorner, northEastCorner);
         }
 
 }

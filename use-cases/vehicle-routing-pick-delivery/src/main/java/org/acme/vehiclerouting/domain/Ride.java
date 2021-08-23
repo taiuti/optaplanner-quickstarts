@@ -17,7 +17,7 @@
 package org.acme.vehiclerouting.domain;
 
 import org.acme.vehiclerouting.domain.location.Location;
-import org.acme.vehiclerouting.domain.solver.DepotAngleCustomerDifficultyWeightFactory;
+import org.acme.vehiclerouting.domain.solver.DepotAngleRideDifficultyWeightFactory;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -25,9 +25,9 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties({ "previousStandstill", "nextCustomer" })
-@PlanningEntity(difficultyWeightFactoryClass = DepotAngleCustomerDifficultyWeightFactory.class)
-public class Customer implements Standstill {
+@JsonIgnoreProperties({ "previousStandstill", "nextRide" })
+@PlanningEntity(difficultyWeightFactoryClass = DepotAngleRideDifficultyWeightFactory.class)
+public class Ride implements Standstill {
 
     protected Long id;
     protected Location location;
@@ -35,17 +35,17 @@ public class Customer implements Standstill {
 
     // Planning variables: changes during planning, between score calculations.
     @PlanningVariable(valueRangeProviderRefs = { "vehicleRange",
-            "customerRange" }, graphType = PlanningVariableGraphType.CHAINED)
+            "rideRange" }, graphType = PlanningVariableGraphType.CHAINED)
     protected Standstill previousStandstill;
 
     // Shadow variables
-    protected Customer nextCustomer;
+    protected Ride nextRide;
     protected Vehicle vehicle;
 
-    public Customer() {
+    public Ride() {
     }
 
-    public Customer(long id, Location location, int demand) {
+    public Ride(long id, Location location, int demand) {
         this.id = id;
         this.location = location;
         this.demand = demand;
@@ -85,13 +85,13 @@ public class Customer implements Standstill {
     }
 
     @Override
-    public Customer getNextCustomer() {
-        return nextCustomer;
+    public Ride getNextRide() {
+        return nextRide;
     }
 
     @Override
-    public void setNextCustomer(Customer nextCustomer) {
-        this.nextCustomer = nextCustomer;
+    public void setNextRide(Ride nextRide) {
+        this.nextRide = nextRide;
     }
 
     @Override

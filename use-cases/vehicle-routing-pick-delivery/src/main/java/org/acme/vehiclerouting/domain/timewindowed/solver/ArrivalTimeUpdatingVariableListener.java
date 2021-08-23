@@ -18,82 +18,82 @@ package org.acme.vehiclerouting.domain.timewindowed.solver;
 
 import java.util.Objects;
 
-import org.acme.vehiclerouting.domain.Customer;
+import org.acme.vehiclerouting.domain.Ride;
 import org.acme.vehiclerouting.domain.Standstill;
 import org.acme.vehiclerouting.domain.Vehicle;
 import org.acme.vehiclerouting.domain.VehicleRoutingSolution;
-import org.acme.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.acme.vehiclerouting.domain.timewindowed.TimeWindowedRide;
 import org.acme.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-// TODO When this class is added only for TimeWindowedCustomer, use TimeWindowedCustomer instead of Customer
-public class ArrivalTimeUpdatingVariableListener implements VariableListener<VehicleRoutingSolution, Customer> {
+// TODO When this class is added only for TimeWindowedRide, use TimeWindowedRide instead of Ride
+public class ArrivalTimeUpdatingVariableListener implements VariableListener<VehicleRoutingSolution, Ride> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
+    public void beforeEntityAdded(ScoreDirector<VehicleRoutingSolution> scoreDirector, Ride ride) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
-        if (customer instanceof TimeWindowedCustomer) {
-            updateArrivalTime(scoreDirector, (TimeWindowedCustomer) customer);
+    public void afterEntityAdded(ScoreDirector<VehicleRoutingSolution> scoreDirector, Ride ride) {
+        if (ride instanceof TimeWindowedRide) {
+            updateArrivalTime(scoreDirector, (TimeWindowedRide) ride);
         }
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
+    public void beforeVariableChanged(ScoreDirector<VehicleRoutingSolution> scoreDirector, Ride ride) {
         // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
-        if (customer instanceof TimeWindowedCustomer) {
-            updateArrivalTime(scoreDirector, (TimeWindowedCustomer) customer);
+    public void afterVariableChanged(ScoreDirector<VehicleRoutingSolution> scoreDirector, Ride ride) {
+        if (ride instanceof TimeWindowedRide) {
+            updateArrivalTime(scoreDirector, (TimeWindowedRide) ride);
         }
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
+    public void beforeEntityRemoved(ScoreDirector<VehicleRoutingSolution> scoreDirector, Ride ride) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
+    public void afterEntityRemoved(ScoreDirector<VehicleRoutingSolution> scoreDirector, Ride ride) {
         // Do nothing
     }
 
     protected void updateArrivalTime(ScoreDirector<VehicleRoutingSolution> scoreDirector,
-            TimeWindowedCustomer sourceCustomer) {
-        Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
+            TimeWindowedRide sourceRide) {
+        Standstill previousStandstill = sourceRide.getPreviousStandstill();
         Long departureTime = previousStandstill == null ? null
-                : (previousStandstill instanceof TimeWindowedCustomer)
-                        ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime()
+                : (previousStandstill instanceof TimeWindowedRide)
+                        ? ((TimeWindowedRide) previousStandstill).getDepartureTime()
                         : ((TimeWindowedDepot) ((Vehicle) previousStandstill).getDepot()).getReadyTime();
-        TimeWindowedCustomer shadowCustomer = sourceCustomer;
-        Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
-        while (shadowCustomer != null && !Objects.equals(shadowCustomer.getArrivalTime(), arrivalTime)) {
-            scoreDirector.beforeVariableChanged(shadowCustomer, "arrivalTime");
-            shadowCustomer.setArrivalTime(arrivalTime);
-            scoreDirector.afterVariableChanged(shadowCustomer, "arrivalTime");
-            departureTime = shadowCustomer.getDepartureTime();
-            shadowCustomer = shadowCustomer.getNextCustomer();
-            arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
+        TimeWindowedRide shadowRide = sourceRide;
+        Long arrivalTime = calculateArrivalTime(shadowRide, departureTime);
+        while (shadowRide != null && !Objects.equals(shadowRide.getArrivalTime(), arrivalTime)) {
+            scoreDirector.beforeVariableChanged(shadowRide, "arrivalTime");
+            shadowRide.setArrivalTime(arrivalTime);
+            scoreDirector.afterVariableChanged(shadowRide, "arrivalTime");
+            departureTime = shadowRide.getDepartureTime();
+            shadowRide = shadowRide.getNextRide();
+            arrivalTime = calculateArrivalTime(shadowRide, departureTime);
         }
     }
 
-    private Long calculateArrivalTime(TimeWindowedCustomer customer, Long previousDepartureTime) {
-        if (customer == null || customer.getPreviousStandstill() == null) {
+    private Long calculateArrivalTime(TimeWindowedRide ride, Long previousDepartureTime) {
+        if (ride == null || ride.getPreviousStandstill() == null) {
             return null;
         }
-        if (customer.getPreviousStandstill() instanceof Vehicle) {
+        if (ride.getPreviousStandstill() instanceof Vehicle) {
             // PreviousStandstill is the Vehicle, so we leave from the Depot at the best
             // suitable time
-            return Math.max(customer.getReadyTime(),
-                    previousDepartureTime + customer.getDistanceFromPreviousStandstill());
+            return Math.max(ride.getReadyTime(),
+                    previousDepartureTime + ride.getDistanceFromPreviousStandstill());
         }
-        return previousDepartureTime + customer.getDistanceFromPreviousStandstill();
+        return previousDepartureTime + ride.getDistanceFromPreviousStandstill();
     }
 
 }

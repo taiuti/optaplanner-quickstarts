@@ -200,9 +200,9 @@ const showProblem = ({solution, scoreExplanation, isSolving}) => {
   vehiclesTable.children().remove();
   solution.vehicleList.forEach((vehicle) => {
     const {id,totalDistanceKm} = vehicle;
-    const totalCustomers = solution.customerList.length;
-    const vehicleCustomers = (vehicle.route.length - 2) / 2;
-    const percentage = vehicleCustomers / solution.customerList.length * 100;
+    const totalRides = solution.rideList.length;
+    const vehicleRides = (vehicle.route.length - 2) / 2;
+    const percentage = vehicleRides / solution.rideList.length * 100;
     const color = colorByVehicle(vehicle);
     const colorIfUsed = color;
     vehiclesTable.append(`<tr class="table-active">
@@ -210,7 +210,7 @@ const showProblem = ({solution, scoreExplanation, isSolving}) => {
       style="background-color: ${colorIfUsed}; display: inline-block; width: 1rem; height: 1rem; text-align: center">
       </i></td><td>Vehicle ${id}</td>
       <td><div class="progress">
-      <div class="progress-bar" role="progressbar" style="width: ${percentage}%">${vehicleCustomers}/${totalCustomers}</div>
+      <div class="progress-bar" role="progressbar" style="width: ${percentage}%">${vehicleRides}/${totalRides}</div>
       <td>${totalDistanceKm}</td>
       </div></td>
       </tr>`);
@@ -230,24 +230,24 @@ const showProblem = ({solution, scoreExplanation, isSolving}) => {
       </i></td><td>Depot ${id}</td>
       </tr>`);
   });
-  // CustomerList
-  customerGroup.clearLayers();
+  // RideList
+  rideGroup.clearLayers();
 
-  solution.customerList.forEach((customer) => {
+  solution.rideList.forEach((ride) => {
     let points = []
-    const color = colorByVehicle(customer.vehicle);
-    L.circleMarker(customer.location[0], {color:'green'}).addTo(customerGroup);
-    L.circleMarker(customer.location[1], {color:'red'}).addTo(customerGroup);
+    const color = colorByVehicle(ride.vehicle);
+    L.circleMarker(ride.location[0], {color:'green'}).addTo(rideGroup);
+    L.circleMarker(ride.location[1], {color:'red'}).addTo(rideGroup);
 
-    if (customer.vehicle===null) {
-      L.polyline([customer.location[0], customer.location[1]], {color: 'blue',  dashArray: '7, 7', dashOffset: '0'}).addTo(customerGroup);
-      points.push(customer.location[0]);
-      points.push(customer.location[1]);
+    if (ride.vehicle===null) {
+      L.polyline([ride.location[0], ride.location[1]], {color: 'blue',  dashArray: '7, 7', dashOffset: '0'}).addTo(rideGroup);
+      points.push(ride.location[0]);
+      points.push(ride.location[1]);
       L.polylineDecorator(points, {
         patterns: [
             {offset: 5, repeat: 80, symbol: L.Symbol.arrowHead({pixelSize: 15, pathOptions: {fillOpacity: 1, weight: 0}})}
         ]
-      }).addTo(customerGroup);
+      }).addTo(rideGroup);
     }
   });
 
@@ -261,9 +261,9 @@ const showProblem = ({solution, scoreExplanation, isSolving}) => {
 
       to = route;
       if(isInternal){
-        L.polyline([from, to], {color,  dashArray: '7, 7', dashOffset: '0'}).addTo(customerGroup);
+        L.polyline([from, to], {color,  dashArray: '7, 7', dashOffset: '0'}).addTo(rideGroup);
       } else {
-        L.polyline([from, to], {color}).addTo(customerGroup);
+        L.polyline([from, to], {color}).addTo(rideGroup);
       }
       isInternal = !(isInternal);
       from = to;
@@ -273,7 +273,7 @@ const showProblem = ({solution, scoreExplanation, isSolving}) => {
       patterns: [
           {color,  offset: 5, repeat: 80, symbol: L.Symbol.arrowHead({pixelSize: 15, pathOptions: {color, fillOpacity: 1, weight: 0}})}
       ]
-    }).addTo(customerGroup);
+    }).addTo(rideGroup);
   });
 
   // Summary
@@ -290,10 +290,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
 }).addTo(map);
 
-const customerGroup = L.layerGroup();
+const rideGroup = L.layerGroup();
 const vehicleGroup = L.layerGroup();
 const depotGroup = L.layerGroup();
-customerGroup.addTo(map);
+rideGroup.addTo(map);
 vehicleGroup.addTo(map);
 depotGroup.addTo(map);
 

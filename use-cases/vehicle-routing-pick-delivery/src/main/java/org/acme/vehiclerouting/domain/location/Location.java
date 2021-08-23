@@ -25,24 +25,24 @@ public abstract class Location {
 
     protected Long id = null;
     protected String name = null;
-    protected Point start; // Scorta
-    protected Point end; // Servizio
+    protected Point pickup;
+    protected Point delivery;
 
     public Location() {
     }
 
-    public Location(long id, String name, Point start, Point end) {
+    public Location(long id, String name, Point pickup, Point delivery) {
         this.id = id;
         this.name = name;
-        this.start = start;
-        this.end = (end == null) ? start : end;
+        this.pickup = pickup;
+        this.delivery = (delivery == null) ? pickup : delivery;
     }
 
-    public Location(long id, String name, Point start) {
+    public Location(long id, String name, Point pickup) {
         this.id = id;
         this.name = name;
-        this.start = start;
-        this.end = start ;
+        this.pickup = pickup;
+        this.delivery = pickup ;
     }
 
     public Long getId() {
@@ -61,26 +61,36 @@ public abstract class Location {
         this.name = name;
     }
 
-    public Point getStart() {
-        return start;
+    public Point getPickup() {
+        return pickup;
     }
 
-    public void setStart(Point start) {
-        this.start = start;
+    public void setPickup(Point pickup) {
+        this.pickup = pickup;
     }
 
-    public Point getEnd() {
+    public Point getDelivery() {
 
-        return end;
+        return delivery;
     }
 
-    public void setEnd(Point end) {
-        this.end = end;
+    public void setDelivery(Point delivery) {
+        this.delivery = delivery;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    /**
+     * The distance's unit of measurement depends on the
+     * {@link VehicleRoutingSolution}'s {@link DistanceType}. It can be in miles or
+     * km, but for most cases it's in the TSPLIB's unit of measurement.
+     *
+     * @return a positive number, the distance multiplied by 1000 to avoid floating
+     *         point arithmetic rounding errors
+     */
+    public abstract long getDistancePickDelivery();
 
     /**
      * The distance's unit of measurement depends on the
@@ -102,17 +112,17 @@ public abstract class Location {
     public double getAngle(Location location) {
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a
         // sphere
-        double latitudeDifference = (location.start.getLatitude() + location.end.getLatitude()) / 2
-                - (start.getLatitude() + end.getLatitude()) / 2;
-        double longitudeDifference = (location.start.getLongitude() + location.end.getLongitude()) / 2
-                - (start.getLongitude() + end.getLongitude()) / 2;
+        double latitudeDifference = (location.pickup.getLatitude() + location.delivery.getLatitude()) / 2
+                - (pickup.getLatitude() + delivery.getLatitude()) / 2;
+        double longitudeDifference = (location.pickup.getLongitude() + location.delivery.getLongitude()) / 2
+                - (pickup.getLongitude() + delivery.getLongitude()) / 2;
 
         return Math.atan2(latitudeDifference, longitudeDifference);
     }
 
     @Override
     public String toString() {
-        return start.toString() + " " + end.toString();
+        return pickup.toString() + " " + delivery.toString();
     }
 
 }

@@ -18,7 +18,7 @@ package org.acme.vehiclerouting.domain;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 
-import org.acme.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.acme.vehiclerouting.domain.timewindowed.TimeWindowedRide;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -29,7 +29,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
         @Override
         public Constraint[] defineConstraints(ConstraintFactory factory) {
                 return new Constraint[] { vehicleCapacity(factory), distanceToPreviousStandstill(factory),
-                                distanceFromLastCustomerToDepot(factory), arrivalAfterDueTime(factory) };
+                                distanceFromLastRideToDepot(factory), arrivalAfterDueTime(factory) };
         }
 
         // ************************************************************************
@@ -37,7 +37,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
         // ************************************************************************
 
         protected Constraint vehicleCapacity(ConstraintFactory factory) {
-                return factory.from(Customer.class).groupBy(Customer::getVehicle, sum(Customer::getDemand))
+                return factory.from(Ride.class).groupBy(Ride::getVehicle, sum(Ride::getDemand))
                                 .filter((vehicle, demand) -> demand > vehicle.getCapacity())
                                 .penalizeLong("vehicleCapacity", HardSoftLongScore.ONE_HARD,
                                                 (vehicle, demand) -> demand - vehicle.getCapacity());
@@ -48,14 +48,14 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
         // ************************************************************************
 
         protected Constraint distanceToPreviousStandstill(ConstraintFactory factory) {
-                return factory.from(Customer.class).penalizeLong("distanceToPreviousStandstill",
-                                HardSoftLongScore.ONE_SOFT, Customer::getDistanceFromPreviousStandstill);
+                return factory.from(Ride.class).penalizeLong("distanceToPreviousStandstill",
+                                HardSoftLongScore.ONE_SOFT, Ride::getDistanceFromPreviousStandstill);
         }
 
-        protected Constraint distanceFromLastCustomerToDepot(ConstraintFactory factory) {
-                return factory.from(Customer.class).filter(customer -> customer.getNextCustomer() == null).penalizeLong(
-                                "distanceFromLastCustomerToDepot", HardSoftLongScore.ONE_SOFT,
-                                customer -> customer.getDistanceTo(customer.getVehicle()));
+        protected Constraint distanceFromLastRideToDepot(ConstraintFactory factory) {
+                return factory.from(Ride.class).filter(ride -> ride.getNextRide() == null).penalizeLong(
+                                "distanceFromLastRideToDepot", HardSoftLongScore.ONE_SOFT,
+                                ride -> ride.getDistanceTo(ride.getVehicle()));
         }
 
         // ************************************************************************
@@ -63,10 +63,10 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
         // ************************************************************************
 
         protected Constraint arrivalAfterDueTime(ConstraintFactory factory) {
-                return factory.from(TimeWindowedCustomer.class)
-                                .filter(customer -> customer.getArrivalTime() > customer.getDueTime())
+                return factory.from(TimeWindowedRide.class)
+                                .filter(ride -> ride.getArrivalTime() > ride.getDueTime())
                                 .penalizeLong("arrivalAfterDueTime", HardSoftLongScore.ONE_HARD,
-                                                customer -> customer.getArrivalTime() - customer.getDueTime());
+                                                ride -> ride.getArrivalTime() - ride.getDueTime());
         }
 
 }
